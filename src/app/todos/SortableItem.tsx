@@ -117,6 +117,7 @@ export default function SortableItem({
           onClick={(e) => {
             e.stopPropagation();
             saveEdit(todo.id);
+            alert("Todo updated successfully!")
           }}
           color="primary"
         >
@@ -139,6 +140,7 @@ export default function SortableItem({
         onClick={(e) => {
           e.stopPropagation();
           deleteTodo(todo.id);
+          alert("Todo deleted successfully!")
         }}
         color="error"
       >

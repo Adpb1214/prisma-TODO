@@ -19,7 +19,7 @@ export async function middleware(req: NextRequest) {
   }
 
   // User pages (restrict admins)
-  if (path.startsWith("/users") && token.role === "admin") {
+  if (path.startsWith("/todos") && token.role === "admin") {
     return NextResponse.redirect(new URL("/admin", req.url));
   }
 
@@ -27,5 +27,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/users/:path*"], // Apply middleware to admin & user pages
+  matcher: ["/admin/:path*", "/todos/:path*"], // Apply middleware to admin & user pages
 };

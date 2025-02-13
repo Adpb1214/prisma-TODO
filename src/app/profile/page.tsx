@@ -1,22 +1,3 @@
-// "use client";
-
-// import { useSession } from "next-auth/react";
-
-// export default function ProfilePage() {
-//   const { data: session, status } = useSession();
-
-//   if (status === "loading") return <p>Loading...</p>;
-
-//   if (!session) return <p>You are not logged in.</p>;
-
-//   return (
-//     <div>
-//       <h1>Profile Page</h1>
-//       <p><strong>Email:</strong> {session.user?.email}</p>
-//       <p><strong>Role:</strong> {session.user?.role}</p>
-//     </div>
-//   );
-// }
 "use client";
 
 import { signOut, useSession } from "next-auth/react";
@@ -25,22 +6,33 @@ export default function ProfilePage() {
   const { data: session } = useSession();
 
   if (!session) {
-    return <p>You are not logged in.</p>;
+    return (
+      <div className="flex h-screen items-center justify-center bg-gray-900 text-white">
+        <p className="text-lg font-semibold">You are not logged in.</p>
+      </div>
+    );
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen">
-      <h1 className="text-2xl font-bold">Profile</h1>
-      <p>Email: {session.user.email}</p>
-      <p>Role: {session.user.role || "User"}</p>
-      
-      {/* Logout Button */}
-      <button
-        onClick={() => signOut()}
-        className="mt-4 px-4 py-2 bg-red-500 text-white rounded-lg"
-      >
-        Logout
-      </button>
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white">
+      <div className="bg-white bg-opacity-10 backdrop-blur-lg shadow-xl rounded-2xl p-8 w-[350px] text-center border border-gray-600">
+       
+
+        {/* User Details */}
+        <h1 className="mt-4 text-2xl font-semibold">{session.user.name || "User"}</h1>
+        <p className="text-gray-300 mt-1">{session.user.email}</p>
+        <span className="text-sm px-4 py-1 mt-2 inline-block bg-gray-700 rounded-full">
+          Role: {session.user.role || "User"}
+        </span>
+
+        {/* Logout Button */}
+        <button
+          onClick={() => signOut()}
+          className="mt-6 px-6 py-2 bg-red-500 hover:bg-red-600 transition rounded-full text-white font-medium shadow-md"
+        >
+          Logout
+        </button>
+      </div>
     </div>
   );
 }

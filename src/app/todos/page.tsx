@@ -49,7 +49,6 @@ export default function TodoPage() {
       const data = await res.json();
 
       if (Array.isArray(data)) {
-        // ✅ Fix sorting issue (Completed tasks at the bottom)
         setTodos(data.sort((a, b) => Number(a.completed) - Number(b.completed)));
       } else {
         console.error("Invalid data format:", data);
@@ -63,7 +62,6 @@ export default function TodoPage() {
   const addTodo = async () => {
     if (!newTodo.trim()) return;
   
-    // Check if the deadline is in the past
     if (deadline && new Date(deadline) < new Date()) {
       alert("Deadline cannot be in the past!");
       return;
@@ -83,7 +81,7 @@ export default function TodoPage() {
       }
   
       setNewTodo("");
-      setDeadline(""); // Reset deadline input
+      setDeadline("");
       fetchTodos();
     } catch (error) {
       console.error("Error creating todo:", error);
@@ -141,9 +139,30 @@ export default function TodoPage() {
   };
 
   return (
-    <Container maxWidth="sm" sx={{ mt: 4 }}>
-      <Paper elevation={3} sx={{ p: 3, bgcolor: "background.paper" }}>
-        <Typography variant="h4" component="h1" align="center" gutterBottom>
+    <div style={{height: "100vh"}} className="flex justify-center items-center">
+
+<Container maxWidth="sm" sx={{ mt: 4 }}>
+      <Paper
+        elevation={3}
+        sx={{
+          p: 3,
+          bgcolor: "rgba(255, 255, 255, 0.1)", // Glassmorphism effect
+          backdropFilter: "blur(10px)",
+          borderRadius: 3,
+          boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.2)",
+        }}
+      >
+        <Typography
+          variant="h4"
+          component="h1"
+          align="center"
+          gutterBottom
+          sx={{
+            fontWeight: "bold",
+            color: "#fff",
+            textShadow: "1px 1px 5px rgba(0, 0, 0, 0.3)",
+          }}
+        >
           🚀 My Todo List
         </Typography>
 
@@ -155,6 +174,7 @@ export default function TodoPage() {
             value={newTodo}
             onChange={(e) => setNewTodo(e.target.value)}
             placeholder="Add a new task..."
+            sx={{ bgcolor: "#fff", borderRadius: 2 }}
           />
           <TextField
             type="date"
@@ -162,12 +182,21 @@ export default function TodoPage() {
             value={deadline}
             onChange={(e) => setDeadline(e.target.value)}
             InputLabelProps={{ shrink: true }}
+            sx={{ bgcolor: "#fff", borderRadius: 2 }}
           />
           <Button
             variant="contained"
             color="primary"
-            onClick={addTodo}
+            onClick={() => {
+              addTodo();
+              alert("Task added successfully!");
+            }}
             startIcon={<Add />}
+            sx={{
+              borderRadius: 2,
+              bgcolor: "#4CAF50",
+              ":hover": { bgcolor: "#388E3C" },
+            }}
           >
             Add
           </Button>
@@ -195,5 +224,8 @@ export default function TodoPage() {
         </DndContext>
       </Paper>
     </Container>
+
+    </div>
+    
   );
 }

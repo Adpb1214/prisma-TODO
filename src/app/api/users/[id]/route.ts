@@ -1,31 +1,36 @@
+// app/api/users/[userId]/route.ts
+// api/users/[userId]/route.ts
+
 import { NextResponse } from "next/server";
-import { getServerSession } from "next-auth/next";
-// import { authOptions } from "../../auth/[...nextauth]/route";
-import { PrismaClient } from "@prisma/client";
+import { getServerSession } from "next-auth";
 import { authOptions } from "app/api/auth/[...nextauth]/route";
+import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-// Update user role
-export async function PATCH(req: Request, { params }: { params: { id: string } }) {
+export async function GET(req: Request, { params }: { params: { userId: string } }) {
+  const { userId } = params;  // This gets the userId from the URL
+
+  // Get session
   const session = await getServerSession(authOptions);
-
-  // Only allow admins to update roles
-  if (!session || session.user?.role !== "admin") {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!session || session.user.role !== "admin") {
+    return NextResponse.json({ message: "Unauthorized" }, { status: 403 });
   }
-
-  const { role } = await req.json();
 
   try {
-    const updatedUser = await prisma.user.update({
-      where: { id: params.id },
-      data: { role },
+    // Fetch tasks (todos) associated with the user
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      include: { todos: true },  // This includes the tasks (todos) of the user
     });
 
-    return NextResponse.json(updatedUser, { status: 200 });
+    if (!user) {
+      return NextResponse.json({ message: "User not found" }, { status: 404 });
+    }
+
+    return NextResponse.json(user.todos);  // Return only the todos (tasks) of the user
   } catch (error) {
-    console.error("Failed to update user role:", error);
-    return NextResponse.json({ error: "Failed to update user role" }, { status: 500 });
+    return NextResponse.json({ message: "Error fetching user tasks" }, { status: 500 });
   }
 }
+

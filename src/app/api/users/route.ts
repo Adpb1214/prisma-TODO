@@ -1,31 +1,24 @@
+// app/api/users/route.ts
 import { NextResponse } from "next/server";
-import { getServerSession } from "next-auth/next";
+import { getServerSession } from "next-auth";
+// import { authOptions } from "@/lib/auth"; // Adjust according to your setup
+// import db from "@/lib/db"; // Your Prisma client or database instance
 import { authOptions } from "../auth/[...nextauth]/route";
 import { PrismaClient } from "@prisma/client";
-// import { authOptions } from "../auth/[...nextauth]/route";
-// import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
-
-// Fetch all users and their todos
 export async function GET() {
-  const session = await getServerSession(authOptions);
+  const session = await getServerSession(authOptions); // Retrieve the session using NextAuth's method
 
-  // Only allow admins to fetch all users
-  if (!session || session.user?.role !== "admin") {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!session || session.user.role !== "admin") {
+    return NextResponse.json({ message: "Unauthorized" }, { status: 403 });
   }
 
   try {
-    const users = await prisma.user.findMany({
-      include: {
-        todos: true, // Include todos for each user
-      },
-    });
-
-    return NextResponse.json(users, { status: 200 });
+    const users = await prisma.user.findMany(); // Fetch all users from the database
+    return NextResponse.json(users); // Return the user data as JSON
   } catch (error) {
-    console.error("Failed to fetch users:", error);
-    return NextResponse.json({ error: "Failed to fetch users" }, { status: 500 });
+    return NextResponse.json({ message: "Error fetching users" }, { status: 500 });
   }
 }
+
