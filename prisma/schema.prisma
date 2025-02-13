@@ -1,0 +1,32 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String  @id @default(cuid())
+  name          String?
+  email         String  @unique
+  password      String
+  emailVerified DateTime?
+  image         String?
+  role          String  @default("user")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  todos    Todo[] 
+}
+
+model Todo {
+  id        String   @id @default(uuid())
+  title     String
+  completed Boolean  @default(false)
+  createdAt DateTime @default(now())
+  deadline  DateTime? // Add this line for the deadline feature
+
+  userId String
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
