@@ -61,25 +61,25 @@ export default function TodoPage() {
   // ✅ Add New Todo
   const addTodo = async () => {
     if (!newTodo.trim()) return;
-  
+
     if (deadline && new Date(deadline) < new Date()) {
       alert("Deadline cannot be in the past!");
       return;
     }
-  
+
     try {
       const response = await fetch("/api/todos", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ title: newTodo, deadline }),
       });
-  
+
       if (!response.ok) {
         const errorData = await response.json();
         console.error("Failed to create todo:", errorData.error);
         return;
       }
-  
+
       setNewTodo("");
       setDeadline("");
       fetchTodos();
@@ -139,93 +139,90 @@ export default function TodoPage() {
   };
 
   return (
-    <div style={{height: "100vh"}} className="flex justify-center items-center">
-
-<Container maxWidth="sm" sx={{ mt: 4 }}>
-      <Paper
-        elevation={3}
-        sx={{
-          p: 3,
-          bgcolor: "rgba(255, 255, 255, 0.1)", // Glassmorphism effect
-          backdropFilter: "blur(10px)",
-          borderRadius: 3,
-          boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.2)",
-        }}
-      >
-        <Typography
-          variant="h4"
-          component="h1"
-          align="center"
-          gutterBottom
+    <div style={{ height: "1000px" }} className="flex justify-center items-center">
+      <Container maxWidth="sm" sx={{ mt: 4 }}>
+        <Paper
+          elevation={3}
           sx={{
-            fontWeight: "bold",
-            color: "#fff",
-            textShadow: "1px 1px 5px rgba(0, 0, 0, 0.3)",
+            p: 3,
+            bgcolor: "rgba(255, 255, 255, 0.1)", // Glassmorphism effect
+            backdropFilter: "blur(10px)",
+            borderRadius: 3,
+            boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.2)",
           }}
         >
-          🚀 My Todo List
-        </Typography>
-
-        {/* Input */}
-        <Box sx={{ display: "flex", gap: 2, mb: 4 }}>
-          <TextField
-            fullWidth
-            variant="outlined"
-            value={newTodo}
-            onChange={(e) => setNewTodo(e.target.value)}
-            placeholder="Add a new task..."
-            sx={{ bgcolor: "#fff", borderRadius: 2 }}
-          />
-          <TextField
-            type="date"
-            variant="outlined"
-            value={deadline}
-            onChange={(e) => setDeadline(e.target.value)}
-            InputLabelProps={{ shrink: true }}
-            sx={{ bgcolor: "#fff", borderRadius: 2 }}
-          />
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => {
-              addTodo();
-              alert("Task added successfully!");
-            }}
-            startIcon={<Add />}
+          <Typography
+            variant="h4"
+            component="h1"
+            align="center"
+            gutterBottom
             sx={{
-              borderRadius: 2,
-              bgcolor: "#4CAF50",
-              ":hover": { bgcolor: "#388E3C" },
+              fontWeight: "bold",
+              color: "#fff",
+              textShadow: "1px 1px 5px rgba(0, 0, 0, 0.3)",
             }}
           >
-            Add
-          </Button>
-        </Box>
+            🚀 My Todo List
+          </Typography>
 
-        {/* Drag & Drop Context */}
-        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-          <SortableContext items={todos.map((todo) => todo.id)} strategy={verticalListSortingStrategy}>
-            <List>
-              {todos.map((todo) => (
-                <SortableItem
-                  key={todo.id}
-                  todo={todo}
-                  editingId={editingId}
-                  editText={editText}
-                  toggleTodo={toggleTodo}
-                  startEditing={startEditing}
-                  saveEdit={saveEdit}
-                  deleteTodo={deleteTodo}
-                  setEditText={setEditText}
-                />
-              ))}
-            </List>
-          </SortableContext>
-        </DndContext>
-      </Paper>
-    </Container>
+          {/* Input */}
+          <Box sx={{ display: "flex", gap: 2, mb: 4 }}>
+            <TextField
+              fullWidth
+              variant="outlined"
+              value={newTodo}
+              onChange={(e) => setNewTodo(e.target.value)}
+              placeholder="Add a new task..."
+              sx={{ bgcolor: "#fff", borderRadius: 2 }}
+            />
+            <TextField
+              type="date"
+              variant="outlined"
+              value={deadline}
+              onChange={(e) => setDeadline(e.target.value)}
+              InputLabelProps={{ shrink: true }}
+              sx={{ bgcolor: "#fff", borderRadius: 2 }}
+            />
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => {
+                addTodo();
+                // alert("Task added successfully!");
+              }}
+              startIcon={<Add />}
+              sx={{
+                borderRadius: 2,
+                bgcolor: "#4CAF50",
+                ":hover": { bgcolor: "#388E3C" },
+              }}
+            >
+              Add
+            </Button>
+          </Box>
 
+          {/* Drag & Drop Context */}
+          <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+            <SortableContext items={todos.map((todo) => todo.id)} strategy={verticalListSortingStrategy}>
+              <List>
+                {todos.map((todo) => (
+                  <SortableItem
+                    key={todo.id}
+                    todo={todo}
+                    editingId={editingId}
+                    editText={editText}
+                    toggleTodo={toggleTodo}
+                    startEditing={startEditing}
+                    saveEdit={saveEdit}
+                    deleteTodo={deleteTodo}
+                    setEditText={setEditText}
+                  />
+                ))}
+              </List>
+            </SortableContext>
+          </DndContext>
+        </Paper>
+      </Container>
     </div>
-    
   );
 }

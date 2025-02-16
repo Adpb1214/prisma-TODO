@@ -32,7 +32,8 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
         where: { id },
       });
   
-      return NextResponse.json({ message: "Todo deleted successfully" });
+      return (NextResponse.json({ message: "Todo deleted successfully" }))
+    
     } catch (error) {
       return NextResponse.json({ error: "Failed to delete todo" }, { status: 500 });
     }
